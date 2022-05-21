@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+    <style>
+        body {
+            text-align: center;
+        }
+
+        .pokemon {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            text-align: center;
+            background-color: rgb(156, 155, 155);
+            margin: 10px;
+            border-radius: 40px;
+            position: relative;
+        }
+
+        img {
+            width: auto;
+            height: auto;
+        }
+
+        #pokedex {
+            float: left;
+            overflow: auto;
+        }
+
+        #stats {
+            position: absolute;
+            top: 50%;
+            left:50%;
+        }
+        #name{
+            position:absolute;
+            top:40%;
+            left:60%;
+            font-family: Arial;
+        }
+
+        @media screen and (max-width: 750px) {
+            .pokemon {
+                display: grid;
+                grid-template-columns: repeat(1, 1fr);
+            }
+            #stats {
+                display: none;
+            }
+            #name {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="pokemon">
+        <div id="pokedex">
+            <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/<%= id %>.png"
+                alt="">
+        </div>
+        <div id="name">
+            <%= name %>
+        </div><br>
+        <div id="stats">Stats
+            <div id="hp">
+                <span>HP</span> <progress value="<%= hp %>" max="255">
+                    <%= hp %>
+                </progress>
+                <%= hp %>
+            </div>
+            <div id="attack">
+                <span>Attack</span> <progress value="<%=attack %>" max="255">
+                    <%= attack%>
+                </progress>
+                <%= attack %>
+            </div>
+            <div id="defense">
+                <span>Defense</span> <progress value="<%=defense %>" max="255">
+                    <%= defense %>
+                </progress>
+                <%= defense %>
+            </div>
+            <div id="special_attack">
+                <span>Special Attack</span> <progress value="<%= special_attack %>" max="255">
+                    <%= special_attack %>
+                </progress>
+                <%= special_attack %>
+            </div>
+            <div id="speed">
+                <span>Speed</span> <progress value="<%= speed %>" max="255">
+                    <%= speed %>
+                </progress>
+                <%= speed %>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
