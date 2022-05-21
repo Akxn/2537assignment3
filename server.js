@@ -19,15 +19,15 @@ app.listen(PORT, () => {
 
 pokemonurl = "http://localhost:5000/";
 
-const pokemonSchema = new mongoose.Schema({
-    id: Number,
-    name: String,
-    abilities: [Object],
-    stats: [Object],
-    sprites: Object,
-    types: [Object],
-    weight: Number
-}, { collection: 'pokemon' });
+// const pokemonSchema = new mongoose.Schema({
+//     id: Number,
+//     name: String,
+//     abilities: [Object],
+//     stats: [Object],
+//     sprites: Object,
+//     types: [Object],
+//     weight: Number
+// }, { collection: 'pokemon' });
 
 const typeSchema = new mongoose.Schema({
     name: String,
@@ -41,9 +41,23 @@ const timelineSchema = new mongoose.Schema({
     time: String,
 });
 
+const userSchema = new mongoose.Schema({
+    username: String,
+    password: String,
+    added: String,
+    cart: [mongoose.Schema.Types.Mixed],
+    orderhistory: [mongoose.Schema.Types.Mixed],
+    event: [mongoose.Schema.Types.Mixed],
+});
+
 const pokemonModel = mongoose.model('pokemon', pokemonSchema);
 const typeModel = mongoose.model('ability', typeSchema);
 const timelineModel = mongoose.model("timelines", timelineSchema);
+const userModel = mongoose.model("users", userSchema)
+
+function authenticate(req, res, next) {
+    req.session.authenticated ? next() : req.redirect("/login");
+}
 
 app.use(bodyparser.urlencoded({ extended: true }))
 app.use(express.static("public"))
@@ -83,11 +97,25 @@ app.use(express.static("public"))
 //     return pokemonData;
 // }
 
+users = [
+    {
+        username:"jojo",
+        password:"123",
+        cart:[
+            {id:1, price: 1, number: 1},
+            {id:2, price: 1, number: 2}
+        ],
+    },
+    {
+        username:"okok", password:"fafa", cart:[]
+    },
+];
+
 app.get('/profile/:id', function (req, res) {
     // console.log(req);
 
-    const url = `http://localhost:5000/pokemon/${req.params.id}`
-    // const url = `https://pokeapi.co/api/v2/pokemon/${req.params.id}`
+    // const url = `http://localhost:5000/pokemon/${req.params.id}`
+    const url = `https://pokeapi.co/api/v2/pokemon/${req.params.id}`
 
     data = " "
     http.get(url, function (https_res) {
@@ -148,6 +176,17 @@ app.get('/profile/:id', function (req, res) {
 app.get('/', (req, res) => {
     res.redirect('/index.html');
 })
+
+app.get('/', (req, res) =>{
+    res.render("login",{
+        username:"",
+        message:"",
+    });
+})
+
+app.get("/userprofile/:name", auth, function(req,res){
+
+});
 
 app.get('/pokemon/:name', (req, res) => {
     let query = isNaN(req.params.name) ? { name: req.params.name } : { id: req.params.name };
