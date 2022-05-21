@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poke Poke</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <style>
+        body,
+        html {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+    </style>
+</head>
+
+<body>
+    <div>Create an account</div>
+    <form id="newaccform" action="/register" method="POST">
+        <p id="error">
+            <%=message %>
+        </p>
+        <label for="username">
+            <input type="text" placeholder="Username" id="username" name="username" required />
+        </label>
+        <label for="email">
+            <input type="text" placeholder="Email" id="email" name="email" value="<%= email %>" required />
+        </label>
+        <label for="password">
+            <input type="password" placeholder="Password" name="password" id="password" required />
+        </label>
+        <input id="submit" type="submit" value="Register">
+    </form>
+</body>
+
+</html>

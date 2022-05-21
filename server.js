@@ -177,12 +177,14 @@ app.get('/', (req, res) => {
     res.redirect('/index.html');
 })
 
-app.get('/', (req, res) =>{
+app.get('/login', (req, res) =>{
     res.render("login",{
         username:"",
         message:"",
     });
 })
+
+app.post
 
 app.get("/userprofile/:name", auth, function(req,res){
 
