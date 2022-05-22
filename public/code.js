@@ -50,8 +50,28 @@ async function loadNineImages() {
     jQuery("main").html(to_add)
 }
 
+function addpokemon() {
+    let pokemonstring = $(this).attr("val");
+    let pokemonarray =  pokemonstring.split(',');
+    $.ajax({
+        url: '/addToCart',
+        type: 'POST',
+        data: {
+            pokemon: pokemonarray[0],
+            image: pokemonarray[1]
+        },
+        success:
+    })
+}
+
+function processaddpokemon(data) {
+    alert(` You have added this pokemon to the cart!!`);
+}
+
+
 function setup() {
     loadNineImages();
+    // $('main').on('click', )
 }
 
 $(document).ready(setup)
