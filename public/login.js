@@ -16,7 +16,7 @@ function login() {
 }
 
 function setup() {
-    $("#login").click(login());
+    $("#submit").click(login());
 }
 
 $(document).ready(setup);

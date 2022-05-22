@@ -6,20 +6,37 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <script src="../public/login.js"></script>
+    <!-- <script href="../public/login.js"></script> -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 
 <body>
     <h1>Logging in</h1>
-    <form id="login">
+    <form id="login" action="/login" method="POST">
         <label id="username-form"></label>
         <input type="text" placeholder="Enter Username" id="username" name="username"
              />
         <input type="password" placeholder="Enter Password" id="password" name="password"/>
-        <input id="submit" type="submit" value="enter"/>
+        <input id="submit" type="submit" value="enter" onclick="login()"/>
     </form>
     <a ref="/newacc">Create an Account</a>
 </body>
+<script>
+    function login() {
+    const username = $("#username").val();
+    const password = $("#password").val();
 
+    $.ajax({
+        url: 'localhost:5000/authenticate',
+        type: 'POST',
+        data: {
+            username: username,
+            password: password,
+        },
+        success: function(res){
+            console.log(res);
+        }
+    })
+}
+</script>
 </html>

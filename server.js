@@ -58,10 +58,11 @@ const typeModel = mongoose.model('ability', typeSchema);
 const timelineModel = mongoose.model("timelines", timelineSchema);
 const userModel = mongoose.model("users", userSchema)
 
-function authenticate(req, res, next) {
-    req.session.authenticated ? next() : req.redirect("/login");
-}
+// function authenticate(req, res, next) {
+//     req.session.authenticated ? next() : req.redirect("/login");
+// }
 
+app.use(express.json());
 app.use(bodyparser.urlencoded({ extended: true }))
 app.use(express.static("public"))
 
@@ -184,7 +185,7 @@ app.get('/', (req, res) => {
     res.redirect('/index.html');
 })
 
-app.get('/login', (req, res) =>{
+app.post('/login', (req, res) =>{
     res.render("login.ejs");
 })
 
