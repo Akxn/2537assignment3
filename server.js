@@ -279,8 +279,8 @@ app.post("/newacc", function (req, res) {
           if(error) {
             console.log(error);
           }
-          // req.session.authenticated = true;
-          // req.session.username = data.user;
+          req.session.authenticated = true;
+          req.session.username = data.user;
           console.log(`HELLO ${data}`);
           res.send(data.user);
         })

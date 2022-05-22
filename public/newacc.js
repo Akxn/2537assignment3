@@ -16,6 +16,7 @@ function saveToDB() {
 }
 
 function processSignUp(data) {
+    console.log(data);
     if(data == true) {
         window.alert("username is taken!!")
     } else {
