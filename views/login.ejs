@@ -8,35 +8,52 @@
     <title>Document</title>
     <!-- <script href="../public/login.js"></script> -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <style>
+        #login{
+            margin-left: auto;
+            margin-right: auto;
+        }
+        #login-form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        input {
+            margin: 5px;
+        }
+    </style>
 </head>
 
 <body>
     <h1>Logging in</h1>
     <form id="login" action="/login" method="POST">
         <label id="username-form"></label>
-        <input type="text" placeholder="Enter Username" id="username" name="username"
-             />
-        <input type="password" placeholder="Enter Password" id="password" name="password"/>
-        <input id="submit" type="submit" value="enter" onclick="login()"/>
+        <input type="text" placeholder="Enter Username" id="username" name="username" />
+        <input type="password" placeholder="Enter Password" id="password" name="password" />
+        <input id="submit" type="submit" value="enter" onclick="login()" />
     </form>
     <a ref="/newacc">Create an Account</a>
 </body>
 <script>
     function login() {
-    const username = $("#username").val();
-    const password = $("#password").val();
+        const username = $("#username").val();
+        const password = $("#password").val();
 
-    $.ajax({
-        url: 'localhost:5000/authenticate',
-        type: 'POST',
-        data: {
-            username: username,
-            password: password,
-        },
-        success: function(res){
-            console.log(res);
-        }
-    })
-}
+        $.ajax({
+            url: '/login',
+            type: 'POST',
+            data: {
+                username: username,
+                password: password,
+            },
+            dataType:'json',
+            crossDomain: true,
+            success: function (res) {
+                console.log(res);
+            }
+        })
+    }
 </script>
+
 </html>

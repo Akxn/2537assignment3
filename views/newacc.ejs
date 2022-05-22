@@ -25,21 +25,20 @@
 
 <body>
     <div>Create an account</div>
-    <form id="newaccform" action="/register" method="POST">
-        <p id="error">
-            <%=message %>
-        </p>
-        <label for="username">
-            <input type="text" placeholder="Username" id="username" name="username" required />
-        </label>
-        <label for="email">
-            <input type="text" placeholder="Email" id="email" name="email" value="<%= email %>" required />
-        </label>
-        <label for="password">
-            <input type="password" placeholder="Password" name="password" id="password" required />
-        </label>
-        <input id="submit" type="submit" value="Register">
-    </form>
+    <main>
+        <form id="signup-form">
+            <div id="username-field">
+                <input type="text" placeholder="Username" id="username-text-field">
+            </div>
+            <div id="password-field">
+                <input type="password" placeholder="Password" id="password-text-field">
+            </div>
+            <div id="name-field">
+                <input type="text" placeholder="Name" id="name-text-field">
+            </div>
+            <input type="button" id="signup-button" value="Sign Up">
+        </form>
+    </main>
 </body>
 
 </html>

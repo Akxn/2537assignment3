@@ -6,7 +6,8 @@ const mongoose = require('mongoose');
 const bodyparser = require('body-parser');
 const http = require('http');
 
-const cors = require("cors");
+const cors = require('cors');
+const { match } = require('assert');
 app.use(cors());
 
 mongoose.connect("mongodb+srv://akamizuna:Mizuna1992@cluster0.bfw2e.mongodb.net/2537?retryWrites=true&w=majority", {
@@ -20,7 +21,7 @@ app.listen(PORT, () => {
     console.log("Listening", process.env.PORT || 5000);
 })
 
-pokemonurl = "http://localhost:5000/";
+// pokemonurl = "http://localhost:5000/";
 
 const pokemonSchema = new mongoose.Schema({
     id: Number,
@@ -47,11 +48,33 @@ const timelineSchema = new mongoose.Schema({
 const userSchema = new mongoose.Schema({
     username: String,
     password: String,
-    added: String,
-    // cart: [mongoose.Schema.Types.Mixed],
-    // orderhistory: [mongoose.Schema.Types.Mixed],
-    // event: [mongoose.Schema.Types.Mixed],
+    name: String,
+    cart: {
+        id: Number,
+        quantity: Number
+    }
 });
+
+const cartItemSchema = new mongoose.Schema({
+    pokemon: String,
+    image: String,
+    quantity: Number,
+    username: String,
+});
+
+const cartItemModel = new mongoose.model("cartitem", cartItemSchema);
+
+const cartSchema = new mongoose.Schema({
+    cartitem: [{
+        _id:String,
+        pokemon: String,
+        image: String,
+        quantity: Number,
+    }],
+    username: String,
+})
+
+const cartModel = new mongoose.model("cart", cartItemSchema);
 
 const pokemonModel = mongoose.model('pokemon', pokemonSchema);
 const typeModel = mongoose.model('ability', typeSchema);
@@ -101,23 +124,23 @@ app.use(express.static("public"))
 //     return pokemonData;
 // }
 
-users = [
-    {
-        username:"jojo",
-        password:"123",
-        cart:[
-            {id:1, price: 1, number: 1},
-            {id:2, price: 1, number: 2}
-        ],
-    },
-    {
-        username:"okok", password:"fafa", cart:[]
-    },
-];
+// users = [
+//     {
+//         username:"jojo",
+//         password:"123",
+//         cart:[
+//             {id:1, price: 1, number: 1},
+//             {id:2, price: 1, number: 2}
+//         ],
+//     },
+//     {
+//         username:"okok", password:"fafa", cart:[]
+//     },
+// ];
 
 app.post('/authenticate', function(req,res) {
     const {username, password} = req.body;
-    console.log(username, password);
+    res.send(req.body);
 })
 
 app.get('/profile/:id', function (req, res) {
@@ -127,7 +150,7 @@ app.get('/profile/:id', function (req, res) {
     const url = `https://pokeapi.co/api/v2/pokemon/${req.params.id}`
 
     data = " "
-    http.get(url, function (https_res) {
+    https.get(url, function (https_res) {
         https_res.on("data", function (chunk) {
             data += chunk
         })
@@ -181,15 +204,76 @@ app.get('/profile/:id', function (req, res) {
 })
 
 
-app.get('/', (req, res) => {
-    res.redirect('/index.html');
-})
+// app.get('/', (req, res) => {
+//     res.redirect('/index.html');
+// })
 
-app.post('/login', (req, res) =>{
+app.get('/login', (req, res) =>{
     res.render("login.ejs");
 })
 
+app.get('/newacc', (req,res) => {
+    res.render("newacc.ejs")
+})
 
+app.post('/login', (req, res) => {
+    let usernameToCheck = req.body.username;
+    let passwordToCheck = req.body.password;
+
+    userModel.find({
+        username: usernameToCheck,
+        password: passwordToCheck
+    }, (err, data) => {
+        if (err) {
+            console.log(err)
+        }
+
+        if (data.length != 0) {
+            req.session.authenticated = true;
+            req.session.username = data[0].username;
+
+            res.send(true);
+        } else {
+            res.send(false);
+        }
+    })
+})
+
+function existinguser(user, callback) {
+    userModel.find({
+        username: user
+    }, (err,data) => {
+        if(err) {
+            console.log(err)
+        }
+        return callback(data.length != 0);
+    })
+}
+
+app.post('/newacc', (req,res) => {
+    let existinguser;
+    existinguser(req.body.username, (response) => {
+        existinguser = response;
+    })
+    if(!existinguser) {
+        userModel.create({
+            username: req.body.username,
+            password: req.body.password,
+            name: req.body.name,
+            cart: {},
+        }, (err, data) => {
+            if(err) {
+                console.log(err);
+            }
+            req.session.authenticated = true;
+            req.session.username = data.username;
+            res.send(data.name);
+        })
+        }
+        else {
+            res.send(true);
+    }
+})
 // app.get("/userprofile/:name", auth, function(req,res){
 
 // });
@@ -287,6 +371,8 @@ app.get("/timeline/remove/:id", function (req, res) {
           }
       )
   })
+
+
 
 
 app.use(express.static('./public'));
