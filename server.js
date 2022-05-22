@@ -6,6 +6,9 @@ const mongoose = require('mongoose');
 const bodyparser = require('body-parser');
 const http = require('http');
 
+const cors = require("cors");
+app.use(cors());
+
 mongoose.connect("mongodb+srv://akamizuna:Mizuna1992@cluster0.bfw2e.mongodb.net/2537?retryWrites=true&w=majority", {
     useNewUrlParser: true,
     useUnifiedTopology: true
@@ -19,15 +22,15 @@ app.listen(PORT, () => {
 
 pokemonurl = "http://localhost:5000/";
 
-// const pokemonSchema = new mongoose.Schema({
-//     id: Number,
-//     name: String,
-//     abilities: [Object],
-//     stats: [Object],
-//     sprites: Object,
-//     types: [Object],
-//     weight: Number
-// }, { collection: 'pokemon' });
+const pokemonSchema = new mongoose.Schema({
+    id: Number,
+    name: String,
+    abilities: [Object],
+    stats: [Object],
+    sprites: Object,
+    types: [Object],
+    weight: Number
+}, { collection: 'pokemon' });
 
 const typeSchema = new mongoose.Schema({
     name: String,
@@ -45,9 +48,9 @@ const userSchema = new mongoose.Schema({
     username: String,
     password: String,
     added: String,
-    cart: [mongoose.Schema.Types.Mixed],
-    orderhistory: [mongoose.Schema.Types.Mixed],
-    event: [mongoose.Schema.Types.Mixed],
+    // cart: [mongoose.Schema.Types.Mixed],
+    // orderhistory: [mongoose.Schema.Types.Mixed],
+    // event: [mongoose.Schema.Types.Mixed],
 });
 
 const pokemonModel = mongoose.model('pokemon', pokemonSchema);
@@ -111,6 +114,11 @@ users = [
     },
 ];
 
+app.post('/authenticate', function(req,res) {
+    const {username, password} = req.body;
+    console.log(username, password);
+})
+
 app.get('/profile/:id', function (req, res) {
     // console.log(req);
 
@@ -169,7 +177,6 @@ app.get('/profile/:id', function (req, res) {
             });
         })
     });
-
 })
 
 
@@ -178,17 +185,13 @@ app.get('/', (req, res) => {
 })
 
 app.get('/login', (req, res) =>{
-    res.render("login",{
-        username:"",
-        message:"",
-    });
+    res.render("login.ejs");
 })
 
-app.post
 
-app.get("/userprofile/:name", auth, function(req,res){
+// app.get("/userprofile/:name", auth, function(req,res){
 
-});
+// });
 
 app.get('/pokemon/:name', (req, res) => {
     let query = isNaN(req.params.name) ? { name: req.params.name } : { id: req.params.name };

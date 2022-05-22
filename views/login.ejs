@@ -6,17 +6,19 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <script src="../public/login.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 
 <body>
     <h1>Logging in</h1>
-    <form id="login" method="POST" action="/login">
-        <label id="username"></label>
-        <input type="text" placeholder="Enter Username" id="username" name="username" value="<%= username %>"
-            required />
-        <input type="password" placeholder="Enter Password" id="password" name="password" required />
+    <form id="login">
+        <label id="username-form"></label>
+        <input type="text" placeholder="Enter Username" id="username" name="username"
+             />
+        <input type="password" placeholder="Enter Password" id="password" name="password"/>
+        <input id="submit" type="submit" value="enter"/>
     </form>
-    <input id="submit" type="submit" value="enter"/>
     <a ref="/newacc">Create an Account</a>
 </body>
 

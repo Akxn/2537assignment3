@@ -17,3 +17,7 @@ let users = [{
 },
 { username: "koko", password: "321", cart: [] },
 ];
+
+function authenticate(req, res, next) {
+    req.session.authenticated ? next() : res.redirect("/login");
+}
