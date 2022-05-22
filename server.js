@@ -9,7 +9,6 @@ var session = require('express-session');
 const cors = require('cors');
 const { match } = require('assert');
 app.use(cors());
-
 const {
     render
 } = require('express/lib/response');
@@ -97,7 +96,7 @@ const userModel = mongoose.model("users", userSchema)
 
 app.use(express.json());
 app.use(bodyparser.urlencoded({ extended: true }))
-app.use(express.static("public"))
+
 
 // app.get("/profile/:id", function (req, res) {
 //     const url = pokemonurl + `pokemon/${req.params.id}`;
@@ -260,30 +259,34 @@ function existinguser(user, callback) {
     })
 }
 
-app.post('/newacc', (req,res) => {
-    let existinguser;
-    existinguser(req.body.username, (response) => {
-        existinguser = response;
-    })
-    if(!existinguser) {
+app.post("/newacc", function (req, res) {
+    existinguser = userModel.findOne({
+      username: req.body.username
+    }, (error, data) => {
+      if(error){
+        console.log(error);
+      }
+      console.log(data);
+      if(data){
+        res.send(true);
+      }
+      else {
         userModel.create({
-            username: req.body.username,
-            password: req.body.password,
-            name: req.body.name,
-            cart: {},
-        }, (err, data) => {
-            if(err) {
-                console.log(err);
-            }
-            req.session.authenticated = true;
-            req.session.username = data.username;
-            res.send(data.name);
+          username: req.body.username,
+          password: req.body.password,
+          cart: {},
+        }, (error, data) => {
+          if(error) {
+            console.log(error);
+          }
+          // req.session.authenticated = true;
+          // req.session.username = data.user;
+          console.log(`HELLO ${data}`);
+          res.send(data.user);
         })
-        }
-        else {
-            res.send(true);
-    }
-})
+      }
+    })
+  })
 // app.get("/userprofile/:name", auth, function(req,res){
 
 // });
@@ -395,8 +398,4 @@ app.get("/timeline/remove/:id", function (req, res) {
           }
       )
   })
-
-
-
-
-app.use(express.static('./public'));
+  app.use(express.static('public'));

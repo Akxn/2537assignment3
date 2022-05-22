@@ -4,7 +4,7 @@ function saveToDB() {
     let name = $('#name-text-field').val();
 
     $.ajax({
-        url: 'localhost:5000/newacc',
+        url: '/newacc',
         type: 'POST',
         data: {
             username: username,
@@ -19,8 +19,8 @@ function processSignUp(data) {
     if(data == true) {
         window.alert("username is taken!!")
     } else {
-        window.alert(`You have signed up! ${data}!`);
-        window.location.href = "localhost:5000/login";
+        window.alert(`You have signed up!!`);
+        // window.location.href = "localhost:5000/login";
     }
 }
 
