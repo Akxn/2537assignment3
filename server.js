@@ -5,10 +5,20 @@ const https = require('https');
 const mongoose = require('mongoose');
 const bodyparser = require('body-parser');
 const http = require('http');
-
+var session = require('express-session');
 const cors = require('cors');
 const { match } = require('assert');
 app.use(cors());
+
+const {
+    render
+} = require('express/lib/response');
+
+app.use(session({
+    secret: "hi",
+    saveUninitialized: true,
+    resave: true
+}));
 
 mongoose.connect("mongodb+srv://akamizuna:Mizuna1992@cluster0.bfw2e.mongodb.net/2537?retryWrites=true&w=majority", {
     useNewUrlParser: true,
@@ -74,7 +84,7 @@ const cartSchema = new mongoose.Schema({
     username: String,
 })
 
-const cartModel = new mongoose.model("cart", cartItemSchema);
+const cartModel = new mongoose.model("cart", cartSchema);
 
 const pokemonModel = mongoose.model('pokemon', pokemonSchema);
 const typeModel = mongoose.model('ability', typeSchema);
@@ -277,6 +287,20 @@ app.post('/newacc', (req,res) => {
 // app.get("/userprofile/:name", auth, function(req,res){
 
 // });
+
+app.get('/loggedin', (req, res) => {
+    if(req.session.authenticated) {
+        res.send(true);
+    } else {
+        res.send(false);
+    }
+})
+
+app.get('/logout', (req,res) => {
+    req.session.authenticated = false;
+    req.session.username =undefined;
+    res.render('login.ejs');
+})
 
 app.get('/pokemon/:name', (req, res) => {
     let query = isNaN(req.params.name) ? { name: req.params.name } : { id: req.params.name };
