@@ -75,7 +75,7 @@ const cartItemModel = new mongoose.model("cartitem", cartItemSchema);
 
 const cartSchema = new mongoose.Schema({
     cartitem: [{
-        _id:String,
+        _id: String,
         pokemon: String,
         image: String,
         quantity: Number,
@@ -147,8 +147,8 @@ app.use(bodyparser.urlencoded({ extended: true }))
 //     },
 // ];
 
-app.post('/authenticate', function(req,res) {
-    const {username, password} = req.body;
+app.post('/authenticate', function (req, res) {
+    const { username, password } = req.body;
     res.send(req.body);
 })
 
@@ -183,19 +183,19 @@ app.get('/profile/:id', function (req, res) {
 
             defense = data.filter((obj_) => {
                 return obj_.name == "defense"
-            }).map((obj2)=>{
+            }).map((obj2) => {
                 return obj2.base_stat
             })
 
             special_attack = data.filter((obj_) => {
                 return obj_.name == "special-attack"
-            }).map((obj2)=>{
+            }).map((obj2) => {
                 return obj2.base_stat
             })
 
             speed = data.filter((obj_) => {
                 return obj_.name == "speed"
-            }).map((obj2)=>{
+            }).map((obj2) => {
                 return obj2.base_stat
             })
 
@@ -217,11 +217,11 @@ app.get('/profile/:id', function (req, res) {
 //     res.redirect('/index.html');
 // })
 
-app.get('/login', (req, res) =>{
+app.get('/login', (req, res) => {
     res.render("login.ejs");
 })
 
-app.get('/newacc', (req,res) => {
+app.get('/newacc', (req, res) => {
     res.render("newacc.ejs")
 })
 
@@ -251,8 +251,8 @@ app.post('/login', (req, res) => {
 function existinguser(user, callback) {
     userModel.find({
         username: user
-    }, (err,data) => {
-        if(err) {
+    }, (err, data) => {
+        if (err) {
             console.log(err)
         }
         return callback(data.length != 0);
@@ -261,47 +261,47 @@ function existinguser(user, callback) {
 
 app.post("/newacc", function (req, res) {
     existinguser = userModel.findOne({
-      username: req.body.username
+        username: req.body.username
     }, (error, data) => {
-      if(error){
-        console.log(error);
-      }
-      console.log(data);
-      if(data){
-        res.send(true);
-      }
-      else {
-        userModel.create({
-          username: req.body.username,
-          password: req.body.password,
-          cart: {},
-        }, (error, data) => {
-          if(error) {
+        if (error) {
             console.log(error);
-          }
-          req.session.authenticated = true;
-          req.session.username = data.user;
-          console.log(`HELLO ${data}`);
-          res.send(data.user);
-        })
-      }
+        }
+        console.log(data);
+        if (data) {
+            res.send(true);
+        }
+        else {
+            userModel.create({
+                username: req.body.username,
+                password: req.body.password,
+                cart: {},
+            }, (error, data) => {
+                if (error) {
+                    console.log(error);
+                }
+                req.session.authenticated = true;
+                req.session.username = data.user;
+                console.log(`HELLO ${data}`);
+                res.send(data.user);
+            })
+        }
     })
-  })
+})
 // app.get("/userprofile/:name", auth, function(req,res){
 
 // });
 
 app.get('/loggedin', (req, res) => {
-    if(req.session.authenticated) {
+    if (req.session.authenticated) {
         res.send(true);
     } else {
         res.send(false);
     }
 })
 
-app.get('/logout', (req,res) => {
+app.get('/logout', (req, res) => {
     req.session.authenticated = false;
-    req.session.username =undefined;
+    req.session.username = undefined;
     res.render('login.ejs');
 })
 
@@ -350,52 +350,140 @@ app.post('/timeline/insert', function (req, res) {
 
 app.get("/timeline/remove/:id", function (req, res) {
     timelineModel.deleteOne(
-      {
-        _id: req.params.id,
-      },
-      function (err, data) {
-        if (err) {
-          console.log("Error " + err);
-        } else {
-          console.log("Deleted: \n" + data);
-        }
-        res.send("Delete is good!");
-      }
-    );
-  });
-
-  app.get("/timeline/removeAll", function (req, res) {
-    timelineModel.deleteMany(
-      {
-        hits: { $gt: 0 },
-      },
-      function (err, data) {
-        if (err) {
-          console.log("Error " + err);
-        } else {
-          console.log("Deleted all");
-        }
-        res.send("Deleted all!");
-      }
-    );
-  });
-
-  app.get("/timeline/like/:id", function (req,res) {
-      timelineModel.updateOne(
-          {
-              _id: req.params.id,
-          }, {
-            $inc: {hits:1},
-          },
-          function (err, data)
-          {
+        {
+            _id: req.params.id,
+        },
+        function (err, data) {
             if (err) {
-              console.log("Error " + err);
+                console.log("Error " + err);
             } else {
-              console.log("Liked: \n" + data);
+                console.log("Deleted: \n" + data);
+            }
+            res.send("Delete is good!");
+        }
+    );
+});
+
+app.get("/timeline/removeAll", function (req, res) {
+    timelineModel.deleteMany(
+        {
+            hits: { $gt: 0 },
+        },
+        function (err, data) {
+            if (err) {
+                console.log("Error " + err);
+            } else {
+                console.log("Deleted all");
+            }
+            res.send("Deleted all!");
+        }
+    );
+});
+
+app.get("/timeline/like/:id", function (req, res) {
+    timelineModel.updateOne(
+        {
+            _id: req.params.id,
+        }, {
+        $inc: { hits: 1 },
+    },
+        function (err, data) {
+            if (err) {
+                console.log("Error " + err);
+            } else {
+                console.log("Liked: \n" + data);
             }
             res.send("Update is good!");
-          }
-      )
-  })
-  app.use(express.static('public'));
+        }
+    )
+})
+
+app.get('/addToCart', (req, res) => {
+    cartItemModel.create({
+        pokemon: req.body.pokemon,
+        image: req.body.image,
+        quantity: 1,
+        username: req.session.username
+    }, (err, cart) => {
+        if (err) {
+            console.log(err)
+        }
+    })
+    res.send(req.body.pokemon);
+})
+
+app.get('/loadCart', (req, res) => {
+    cartItemModel.find({
+        username: req.session.username
+    }, (err, cart) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send(cart);
+        }
+    })
+})
+
+app.post('/delete', (req, res) => {
+    cartItemModel.deleteOne({
+        _id:body._id
+    }, (err,cart)=>{
+        if(err){
+            console.log(err);
+        } else {
+            res.send(cart);
+        }
+    })
+})
+
+app.post('/updatecart', (req,res) => {
+    cartItemModel.updateOne({
+        _id:req.body._id
+    }, {
+        quantity:req.body.quantity
+    }, (err, cart) => {
+        if(err) {
+            console.log(err);
+        } else{
+            res.send(cart);
+        }
+    })
+})
+
+app.post('/checkout', (req,res) => {
+    cartModel.create({
+        cartitem: req.body.cartitem,
+        username: req.session.username
+    }, (err, cart) => {
+        if(err) {
+            console.log(err);
+        } else {console.log(cart);}
+    })
+
+    cartItemModel.deleteMany({
+        username:req.session.username,
+    }, (err,cart) => {
+        if(err) {
+            console.log(err);
+        } else{
+            console.log(cart);
+        }
+    })
+    res.send(true);
+})
+
+app.get('/orderhistory', (req,res) => {
+    cartModel.find({
+        username: req.session.username
+    }, (err, cart) => {
+        if(err) {
+            console.log(err);
+        } else{
+            console.log(cart);
+            res.send(cart);
+        }
+    })
+})
+
+
+app.use(express.static('public'));
