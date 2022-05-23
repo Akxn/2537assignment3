@@ -27,7 +27,7 @@ function processPokemonResponse(data) {
     <a href= "/profile/${data.id}">
     <img src="${data.sprites.other["official-artwork"].front_default}"> </a>
     <div> ${data.name} </div>
-    <div> ${data.base_experience}</div>
+    <button id="${data.id * 5}" class="cart"><span class="material-icons">Add to cart</span></button>
     </div>`
 
 }
@@ -37,7 +37,7 @@ async function loadNineImages() {
             to_add += `<div class="images_group">`
         }
 
-        x = Math.floor(Math.random() * 30) + 1
+        x = Math.floor(Math.random() * 888) + 1
         await $.ajax({
             type: "GET",
             url: `https://pokeapi.co/api/v2/pokemon/${x}/`,
@@ -50,17 +50,19 @@ async function loadNineImages() {
     jQuery("main").html(to_add)
 }
 
-function addpokemon() {
-    let pokemonstring = $(this).attr("val");
-    let pokemonarray =  pokemonstring.split(',');
+function addtocart() {
+    i = this.id / 5;
+    console.log(x);
     $.ajax({
-        url: '/addToCart',
-        type: 'POST',
-        data: {
-            pokemon: pokemonarray[0],
-            image: pokemonarray[1]
-        },
-        success: processPokemonResponse
+        url: `http://localhost:5000/cart/insert/${i}`,
+        type: "get",
+        success: function (a) {
+            if(a) {
+                window.alert(`Id: ${i} card was added to your cart`);
+            } else {
+                window.alert(`Please login before add to cart`);
+            }
+        }
     })
 }
 
@@ -70,6 +72,8 @@ function processaddpokemon(data) {
 
 
 function setup() {
+    $("body").on("click", ".cart", addcart)
+    // $("main").on("click", ".cart", addtocart)
     loadNineImages();
     // $('main').on('click', )
 }

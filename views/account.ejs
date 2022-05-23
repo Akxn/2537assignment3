@@ -26,6 +26,7 @@
 
 <body>
     <div id="info">Acounts info</div>
+    <button onclick="window.location.href='/index.html'">Home Page</button>
     <div>
         <h2>History!<button onclick="clearEvents()">clear all</button></h2>
     </div>
@@ -42,10 +43,12 @@
         <input type="number" id="age" value="<%= age %>" disabled>
     </br>
         <button id="logout" onclick="logout()">Logout</button>
+        <button id="home"
     </div>
     <h3>Your shopping cart</h3>
-    <div id="cart"></div>
+    <div class="cart"></div>
 </body>
 <script type="text/javascript" src="server.js"></script>
+<script type="text/javascript" src="cart.js"></script>
 
 </html>

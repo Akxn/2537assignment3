@@ -25,7 +25,7 @@ function processSignUp(data) {
         window.alert("username is taken!!")
     } else {
         window.alert(`You have signed up!!`);
-        window.location.href = "localhost:5000/login";
+        window.location.href = "http://localhost:5000/login";
     }
 }
 

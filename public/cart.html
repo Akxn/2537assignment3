@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=BioRhyme:wght@700&display=swap');
+        body {
+            background-color: rgb(255, 255, 255);
+            display: flex;
+            flex-direction: column;
+        }
+        main {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+
+        }
+
+        #cart {
+            border-style: solid;
+            padding-left: 1%;
+            padding-right: 1%;
+        }
+
+        #previous {
+            border-style: solid;
+            border-width: thick;
+        }
+
+        .button {
+            background: none;
+            text-decoration: none;
+            color: black;
+            box-shadow: 0px 0px 0px 2px rgb(197, 214, 216);
+            border-radius: 3px;
+            padding: 5px 2em;
+            transition: 0.5s;
+        }
+
+        .button:hover {
+            background: gray;
+            color: white;
+            transition: 0.5s;
+        }
+
+        .image_container {
+            text-align: center;
+            background-color:  #eee;
+            padding: 10px;
+            margin: 10px;
+            border-radius: 20px;
+        }
+
+        .image_container img {
+            margin-top: 20px;
+            max-width: 50%;
+        }
+        .a {
+            text-align: center;
+            color: rgb(32, 49, 72);
+            font-size:medium;
+        }
+
+        @media screen and (max-width: 900px) {
+            main{
+                flex-direction: column;
+                align-content: space-around;
+            }
+        }
+
+
+    </style>
+
+</head>
+<body>
+    <h1>
+       Welcome to your shopping cart
+    </h1>
+    <div>
+        <button class="btn button" id="back">Back to main</button>
+    </div>
+    <br>
+    <main>
+        <div id="cart">
+            <h3 class="a">Your cart</h3>
+            <div id="box">
+            </div>
+        </div>
+        <br>
+        <div id="previous">
+            <h3 class="a">Previous Orders</h3>
+            <div id="box2">
+
+            </div>
+        </div>
+
+    </main>
+    <script src="./cart.js"></script>
+</body>
+</html>

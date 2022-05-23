@@ -42,6 +42,22 @@ function profilechecked(pokemonName) {
     })
 }
 
+function addcart() {
+    i = this.id / 10;
+    console.log(x);
+    $.ajax({
+        url: `http://localhost:5000/cart/insert/${i}`,
+        type: "get",
+        success: function (a) {
+            if(a) {
+                window.alert(`Id: ${i} card was added to your cart`);
+            } else {
+                window.alert(`Please login before add to cart`);
+            }
+        }
+    })
+}
+
 function deleteEvent(id) {
     $.ajax({
         url: `/timeline/remove/${id}`,

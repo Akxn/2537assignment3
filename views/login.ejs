@@ -26,6 +26,7 @@
 </head>
 
 <body>
+    <div>
     <h1>Logging in</h1>
     <form id="login" action="/login" method="POST">
         <label id="username-form"></label>
@@ -33,7 +34,8 @@
         <input type="password" placeholder="Enter Password" id="password" name="password" />
         <input id="submit" type="submit" value="enter" onclick="login()" />
     </form>
-    <a ref="/newacc">Create an Account</a>
+    <a href="/newacc">Create an Account</a>
+</div>
 </body>
 <script>
     function login() {

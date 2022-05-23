@@ -12,6 +12,7 @@ app.use(cors());
 const {
     render
 } = require('express/lib/response');
+const { off } = require('process');
 
 app.use(session({
     secret: "topsecret",
@@ -61,10 +62,10 @@ const userSchema = new mongoose.Schema({
     firstname: String,
     lastname: String,
     age: Number,
-    cart: {
-        id: Number,
-        quantity: Number
-    }
+    cart: [],
+    orders:[],
+    timelines:[]
+
 });
 
 const cartItemSchema = new mongoose.Schema({
@@ -77,17 +78,14 @@ const cartItemSchema = new mongoose.Schema({
 const cartItemModel = new mongoose.model("cartitem", cartItemSchema);
 
 const cartSchema = new mongoose.Schema({
-    cartitem: [{
-        _id: String,
-        pokemon: String,
-        image: String,
-        quantity: Number,
-    }],
     username: String,
+    password: String,
+    cart: [],
+    orders:[],
+    timelines:[]
 })
 
 const cartModel = new mongoose.model("cart", cartSchema);
-
 const pokemonModel = mongoose.model('pokemon', pokemonSchema);
 const typeModel = mongoose.model('ability', typeSchema);
 const timelineModel = mongoose.model("timelines", timelineSchema);
@@ -162,12 +160,11 @@ app.use(bodyparser.urlencoded({ extended: true }))
 //     const { username, password } = req.body;
 //     res.send(req.body);
 // })
-
 app.get('/profile/:id', function (req, res) {
     // console.log(req);
 
-    // const url = `http://localhost:5000/pokemon/${req.params.id}`
     const url = `https://pokeapi.co/api/v2/pokemon/${req.params.id}`
+
 
     data = " "
     https.get(url, function (https_res) {
@@ -178,35 +175,35 @@ app.get('/profile/:id', function (req, res) {
         https_res.on("end", function () {
             data = JSON.parse(data)
 
-            tmp = data.filter((obj_) => {
-                return obj_.name == "hp"
+            tmp = data.stats.filter((obj_) => {
+                return obj_.stat.name == "hp"
             }).map(
                 (obj_2) => {
                     return obj_2.base_stat
                 }
             )
 
-            attack = data.filter((obj_) => {
-                return obj_.name == "attack"
+            attack = data.stats.filter((obj_) => {
+                return obj_.stat.name == "attack"
             }).map((obj2) => {
                 return obj2.base_stat
             })
 
-            defense = data.filter((obj_) => {
-                return obj_.name == "defense"
-            }).map((obj2) => {
+            defense = data.stats.filter((obj_) => {
+                return obj_.stat.name == "defense"
+            }).map((obj2)=>{
                 return obj2.base_stat
             })
 
-            special_attack = data.filter((obj_) => {
-                return obj_.name == "special-attack"
-            }).map((obj2) => {
+            special_attack = data.stats.filter((obj_) => {
+                return obj_.stat.name == "special-attack"
+            }).map((obj2)=>{
                 return obj2.base_stat
             })
 
-            speed = data.filter((obj_) => {
-                return obj_.name == "speed"
-            }).map((obj2) => {
+            speed = data.stats.filter((obj_) => {
+                return obj_.stat.name == "speed"
+            }).map((obj2)=>{
                 return obj2.base_stat
             })
 
@@ -221,6 +218,7 @@ app.get('/profile/:id', function (req, res) {
             });
         })
     });
+
 })
 
 
@@ -493,19 +491,7 @@ app.get("/timeline/like/:id", function (req, res) {
     )
 })
 
-app.get('/addToCart', (req, res) => {
-    cartItemModel.create({
-        pokemon: req.body.pokemon,
-        image: req.body.image,
-        quantity: 1,
-        username: req.session.username
-    }, (err, cart) => {
-        if (err) {
-            console.log(err)
-        }
-    })
-    res.send(req.body.pokemon);
-})
+
 
 app.get('/loadCart', (req, res) => {
     cartItemModel.find({
@@ -580,5 +566,109 @@ app.get('/orderhistory', (req,res) => {
     })
 })
 
+app.get('/cart/insert/:id', function (req, res) {
+    if(req.session.authenticated) {
+        userModel.updateOne({
+                user: req.session.username,
+                pass: req.session.password
+            }, {
+                $push: {
+                    cart: {
+                        id: req.params.id,
+                        cost: 10,
+                        count: 1
+                    }
+                }
+            },
+            function (err, data) {
+                if (err) {
+                    console.log("Error " + err);
+                } else {
+                    console.log("Data " + data);
+                }
+                res.send("Insertion is successful!");
+            });
+    } else {
+        res.send(null);
+    }
+})
+
+app.get('/delete/:id', function (req, res) {
+    userModel.updateOne({
+        user: req.session.username,
+        pass: req.session.password
+    }, {
+        $pull: {
+            cart: {
+                id: req.params.id,
+            }
+        } },
+    function (err, data) {
+        if (err) {
+            console.log("Error " + err);
+        } else {
+            console.log("Data " + data);
+        }
+        res.send("Delete request is successful!");
+    });
+})
+
+app.get('/checkout/:id', function (req, res) {
+    userModel.updateOne({
+            user: req.session.username,
+            pass: req.session.password
+        }, {
+            $push: {
+                orders: {
+                    id: req.params.id,
+                    cost: 10,
+                    count: 1
+                }
+            }
+        },
+        function (err, data) {
+            if (err) {
+                console.log("Error " + err);
+            } else {
+                console.log("Data " + data);
+            }
+            res.send("insertion is successful!");
+        });
+})
+
+app.get('/deleteOrder/:id', function (req, res) {
+    userModel.updateOne({
+        user: req.session.username,
+        pass: req.session.password
+    }, {
+        $pull: {
+            orders: {
+                id: req.params.id,
+            }
+        } },
+    function (err, data) {
+        if (err) {
+            console.log("Error " + err);
+        } else {
+            console.log("Data " + data);
+        }
+        res.send("Delete is successful!");
+    });
+})
+
+app.get('/cart/getAllEvents', function (req, res) {
+    userModel.find({
+        user: req.session.username,
+        pass: req.session.password
+    },
+    function (err, data) {
+        if (err) {
+            console.log("Error " + err);
+        } else {
+            console.log("Data " + data);
+        }
+        res.send(data);
+    });
+})
 
 app.use(express.static('public'));
