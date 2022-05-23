@@ -9,33 +9,83 @@
     <!-- <script href="../public/login.js"></script> -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <style>
-        #login{
+        body,
+        html {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-align: center;
+        }
+
+        main {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            float: center;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        #login {
+            display: flex;
+            flex-direction: column;
+            margin-left: auto;
+            margin-right: auto;
             margin-left: auto;
             margin-right: auto;
         }
+
         #login-form {
             display: flex;
             flex-direction: column;
             align-items: center;
         }
 
+        #log {
+            margin-top: auto;
+            margin-bottom: auto;
+            border-style: solid;
+            margin-left: auto;
+            margin-right: auto;
+            width: 300px;
+            height: 300px;
+        }
+
         input {
             margin: 5px;
+        }
+
+        #home{
+            margin-top:10px;
+        }
+
+        @media screen and (max-width: 900px) {
+            main{
+                flex-direction: column;
+                align-content: space-around;
+            }
         }
     </style>
 </head>
 
 <body>
-    <div>
-    <h1>Logging in</h1>
-    <form id="login" action="/login" method="POST">
-        <label id="username-form"></label>
-        <input type="text" placeholder="Enter Username" id="username" name="username" />
-        <input type="password" placeholder="Enter Password" id="password" name="password" />
-        <input id="submit" type="submit" value="enter" onclick="login()" />
-    </form>
-    <a href="/newacc">Create an Account</a>
-</div>
+    <div id="log">
+        <button id="home" onclick="window.location.href='/index.html'">Home Page</button>
+        <h1>Logging in</h1>
+        <form id="login" action="/login" method="POST">
+            <label id="username-form"></label>
+            <input type="text" placeholder="Enter Username" id="username" name="username" />
+            <input type="password" placeholder="Enter Password" id="password" name="password" />
+            <input id="submit" type="submit" value="enter" onclick="login()" />
+        </form>
+        <a href="/newacc">Create an Account</a>
+    </div>
 </body>
 <script>
     function login() {
@@ -49,7 +99,7 @@
                 username: username,
                 password: password,
             },
-            dataType:'json',
+            dataType: 'json',
             crossDomain: true,
             success: function (res) {
                 console.log(res);
