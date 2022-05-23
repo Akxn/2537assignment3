@@ -60,7 +60,7 @@ function addpokemon() {
             pokemon: pokemonarray[0],
             image: pokemonarray[1]
         },
-        success:
+        success: processPokemonResponse
     })
 }
 

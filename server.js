@@ -14,7 +14,7 @@ const {
 } = require('express/lib/response');
 
 app.use(session({
-    secret: "hi",
+    secret: "topsecret",
     saveUninitialized: true,
     resave: true
 }));
@@ -55,9 +55,12 @@ const timelineSchema = new mongoose.Schema({
 });
 
 const userSchema = new mongoose.Schema({
+    // admin: Boolean,
     username: String,
     password: String,
-    name: String,
+    firstname: String,
+    lastname: String,
+    age: Number,
     cart: {
         id: Number,
         quantity: Number
@@ -93,6 +96,14 @@ const userModel = mongoose.model("users", userSchema)
 // function authenticate(req, res, next) {
 //     req.session.authenticated ? next() : req.redirect("/login");
 // }
+
+// app.post("/authentication", (req,res) => {
+//     cost {
+//         username,
+//         password
+//     } = req.body;
+//     res.send(req.body);
+// })
 
 app.use(express.json());
 app.use(bodyparser.urlencoded({ extended: true }))
@@ -147,10 +158,10 @@ app.use(bodyparser.urlencoded({ extended: true }))
 //     },
 // ];
 
-app.post('/authenticate', function (req, res) {
-    const { username, password } = req.body;
-    res.send(req.body);
-})
+// app.post('/authenticate', function (req, res) {
+//     const { username, password } = req.body;
+//     res.send(req.body);
+// })
 
 app.get('/profile/:id', function (req, res) {
     // console.log(req);
@@ -214,6 +225,8 @@ app.get('/profile/:id', function (req, res) {
 
 
 // app.get('/', (req, res) => {
+//     if (!req.session.autheticated) return res.render('login.ejs');
+//     return res.render('account.ejs',)
 //     res.redirect('/index.html');
 // })
 
@@ -241,7 +254,7 @@ app.post('/login', (req, res) => {
             req.session.authenticated = true;
             req.session.username = data[0].username;
 
-            res.send(true);
+            res.redirect('account');
         } else {
             res.send(false);
         }
@@ -274,6 +287,9 @@ app.post("/newacc", function (req, res) {
             userModel.create({
                 username: req.body.username,
                 password: req.body.password,
+                firstname: req.body.firstname,
+                lastname: req.body.lastname,
+                age: req.body.age,
                 cart: {},
             }, (error, data) => {
                 if (error) {
@@ -287,6 +303,78 @@ app.post("/newacc", function (req, res) {
         }
     })
 })
+
+app.get('/', (req, res) => {
+    if(!req.session.autheticated) return res.render('login.ejs');
+    return res.render('account.ejs', {
+        "username": req.session.username,
+        "firstname": req.session.firstname,
+        "lastname": req.session.lastname,
+        "age": req.session.age
+    })
+});
+
+app.get('/auth', (req,res) => {
+    return res.send({
+        isAuth: req.session.authenticated ? true : false,
+        sessionID: req.session.sessionID
+    })
+})
+
+app.get('/account', (req, res) => {
+    if(!req.session.authenticated) return res.redirect('/index.html')
+    res.render('account.ejs', {
+        "username": req.session.username,
+        "firstname": req.session.firstname,
+        "lastname": req.session.lastname,
+        "age": req.session.age
+    })
+    return;
+})
+
+// app.post('/authenticate', (req, res) => {
+//     const i = req.body;
+//     // login
+//     if (i.method === 1) {
+//         userModel.find({ username: i.username, password: i.password }, (err, body) => {
+//             if (err) throw err;
+//             if (body.length > 0) {
+//                 req.session.authenticated = true;
+//                 req.session.username = i.username;
+//                 req.session.admin = body[0].admin;
+//                 req.session.firstName = body[0].firstName;
+//                 req.session.lastName = body[0].lastName;
+//                 req.session.age = body[0].age;
+//                 return res.send(true);
+//             } else return res.send(false);
+//         })
+//     }
+//     // register
+//     else if (i.method === 0) {
+//         userModel.find({ username: i.username }, (err, body) => {
+//             if (err) throw err;
+//             if (body.length < 1) { // if no account found
+//                 userModel.create({
+//                     admin: false,
+//                     username: i.username,
+//                     password: i.password,
+//                     firstName: i.firstName,
+//                     lastName: i.lastName,
+//                     age: i.age
+//                 }, (err) => {
+//                     if (err) throw err;
+//                     req.session.authenticated = true;
+//                     req.session.admin = false;
+//                     req.session.username = i.username;
+//                     req.session.firstName = i.firstName;
+//                     req.session.lastName = i.lastName;
+//                     req.session.age = i.age;
+//                     return res.send(true);
+//                 })
+//             } else return res.send(false);
+//         })
+//     }
+// });
 // app.get("/userprofile/:name", auth, function(req,res){
 
 // });
@@ -295,14 +383,21 @@ app.get('/loggedin', (req, res) => {
     if (req.session.authenticated) {
         res.send(true);
     } else {
-        res.send(false);
+        res.redirect("/login.ejs");
     }
 })
 
 app.get('/logout', (req, res) => {
     req.session.authenticated = false;
-    req.session.username = undefined;
-    res.render('login.ejs');
+    req.session.username = null;
+    req.session.save(function (err) {
+        if (err) next(err);
+        req.session.regenerate(function(err){
+            if (err) next(err);
+            res.redirect("/login.ejs");
+        });
+    });
+    // res.render('login.ejs');
 })
 
 app.get('/pokemon/:name', (req, res) => {

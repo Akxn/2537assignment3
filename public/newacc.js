@@ -1,7 +1,9 @@
 function saveToDB() {
     let username = $('#username-text-field').val();
     let password = $('#password-text-field').val();
-    let name = $('#name-text-field').val();
+    let firstname = $('#first-name-field').val();
+    let lastname = $('#last-name-field').val();
+    let age = $('#age-text-field').val();
 
     $.ajax({
         url: '/newacc',
@@ -9,7 +11,9 @@ function saveToDB() {
         data: {
             username: username,
             password: password,
-            name: name
+            firstname: firstname,
+            lastname: lastname,
+            age: age
         },
         success: processSignUp
     })
@@ -21,7 +25,7 @@ function processSignUp(data) {
         window.alert("username is taken!!")
     } else {
         window.alert(`You have signed up!!`);
-        // window.location.href = "localhost:5000/login";
+        window.location.href = "localhost:5000/login";
     }
 }
 

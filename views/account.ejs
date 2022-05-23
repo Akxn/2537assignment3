@@ -1,23 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Account Page</title>
-    <script src="/public/timeline.js"></script>
+    <style>
+        #info {
+            border-style: solid;
+            width: 100px;
+            height: 20px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #events {
+            border-style: solid;
+        }
+
+        /* #accountdeets {} */
+    </style>
+    <!-- <script src="../server.js"></script> -->
 </head>
+
 <body>
-    <div>Acounts info</div>
-    <h2>History!<button onclick="clearEvents()">clear all</button></h2>
+    <div id="info">Acounts info</div>
+    <div>
+        <h2>History!<button onclick="clearEvents()">clear all</button></h2>
+    </div>
     <div id="events"></div>
     <div id="accountdeets">
+        <h2>User Profile</h2>
+        <h5>Username</h5>
+        <input type="text" id="username" value="<%= username %>" disabled>
+        <h5>First Name</h5>
+        <input type="text" id="firstname" value="<%= firstname %>" disabled>
+        <h5>Last Name</h5>
+        <input type="text" id="lastname" value="<%= lastname %>" disabled>
+        <h5>Age</h5>
+        <input type="number" id="age" value="<%= age %>" disabled>
+    </br>
         <button id="logout" onclick="logout()">Logout</button>
     </div>
     <h3>Your shopping cart</h3>
     <div id="cart"></div>
 </body>
-<script>
+<script type="text/javascript" src="server.js"></script>
 
-</script>
 </html>
