@@ -27,7 +27,7 @@ function processPokemonResponse(data) {
     <a href= "/profile/${data.id}">
     <img src="${data.sprites.other["official-artwork"].front_default}"> </a>
     <div> ${data.name} </div>
-    <button id="${data.id * 5}" class="cart"><span class="material-icons">Add to cart</span></button>
+    <button id="${data.id * 10}" class="cart"><span class="material-icons">Add to cart</span></button>
     </div>`
 
 }
@@ -51,7 +51,7 @@ async function loadNineImages() {
 }
 
 function addtocart() {
-    i = this.id / 5;
+    i = this.id / 10;
     console.log(x);
     $.ajax({
         url: `http://localhost:5000/cart/insert/${i}`,
